@@ -32,7 +32,7 @@ class Todo {
     this.status = Status.todo,
   });
 
-  Todo.fromJson(Map<String, dynamic> json, this.key)
+  Todo.fromJson(Map<String, dynamic> json, {required this.key})
       : title = json['title'],
         // completed = json['completed']
         creatorUid = json['creatorUid'],
@@ -47,9 +47,14 @@ class Todo {
         'status': status.name,
       };
 
+  static fromSnapshot(QueryDocumentSnapshot<Object?> doc) {
+    final data = Map<String, dynamic>.from((doc.data() ?? {}) as Map);
+    return Todo.fromJson(data, key: doc.id);
+  }
+
   static create({
     required String title,
-    required String creatorUid,
+    String? creatorUid,
     Status status = Status.todo,
   }) async {
     final createData = {
@@ -68,8 +73,8 @@ class Todo {
   }
 
   /// [updateStatus] updates status in Firestore and model.
-  void updateStatus(Status status) {
-    doc.update({'status': status.name});
+  Future<void> updateStatus(Status status) async {
+    await doc.update({'status': status.name});
     this.status = status;
   }
 }

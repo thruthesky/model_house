@@ -2,7 +2,8 @@ import 'package:example/firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:model_house/model_house.dart';
-import 'package:model_house/todo/widgets/todo.screen.dart';
+import 'package:model_house/todo/widgets/todo.list.screen.dart';
+import 'package:model_house/todo/widgets/todo.kanban.screen.dart';
 import 'package:model_house/widgets/auth/email_password_login.dart';
 
 void main() async {
@@ -80,9 +81,17 @@ class _MyHomePageState extends State<MyHomePage> {
             onPressed: () => showGeneralDialog(
               context: context,
               pageBuilder: (context, animation, secondaryAnimation) =>
-                  const TodoScreen(),
+                  const TodoListScreen(),
             ),
-            child: const Text("TODOs"),
+            child: const Text("TODO LIST"),
+          ),
+          ElevatedButton(
+            onPressed: () => showGeneralDialog(
+              context: context,
+              pageBuilder: (context, animation, secondaryAnimation) =>
+                  const TodoKanbanScreen(),
+            ),
+            child: const Text("TODO Kanban"),
           ),
           ElevatedButton(
             onPressed: () => showGeneralDialog(
