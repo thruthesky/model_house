@@ -2,6 +2,7 @@ import 'package:example/firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:model_house/model_house.dart';
+import 'package:model_house/todo/widgets/todo.screen.dart';
 import 'package:model_house/widgets/auth/email_password_login.dart';
 
 void main() async {
@@ -74,6 +75,14 @@ class _MyHomePageState extends State<MyHomePage> {
                       ),
                     ],
                   ),
+          ),
+          ElevatedButton(
+            onPressed: () => showGeneralDialog(
+              context: context,
+              pageBuilder: (context, animation, secondaryAnimation) =>
+                  const TodoScreen(),
+            ),
+            child: const Text("TODOs"),
           ),
           ElevatedButton(
             onPressed: () => showGeneralDialog(

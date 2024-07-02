@@ -22,7 +22,7 @@ Service class does
 
 ## Documentation
 
-There is no enlish version of documents. So, write all the document in the source code. The comment int source code will turn into dartdoc when it is deployed into pub.dev.
+There is no English version of documents. So, write all the document in the source code. The comment int source code will turn into dartdoc when it is deployed into pub.dev.
 
 
 ## Test
