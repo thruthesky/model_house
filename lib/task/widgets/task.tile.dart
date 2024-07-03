@@ -2,18 +2,30 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:model_house/task/task.dart';
 
+// TODO review.
+// @withcenter.dev2:
+// I am thinking on deleting this.
+// But I need to review if some sort of basic
+// default widget is needed.
 class TaskTile extends StatelessWidget {
   const TaskTile({
     super.key,
     required this.task,
     this.buider,
+    this.onTap,
   });
 
   final Task task;
+
   final Widget Function(
     BuildContext context,
     Task task,
   )? buider;
+
+  final Function(
+    BuildContext context,
+    Task task,
+  )? onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -27,9 +39,17 @@ class TaskTile extends StatelessWidget {
           child: ListTile(
             title: Text(task.title ?? ""),
             subtitle: Text(task.status?.name ?? ""),
-            onTap: () => setStatus(context),
+            onTap: () => _onTap(context),
           ),
         );
+  }
+
+  _onTap(BuildContext context) {
+    if (onTap != null) {
+      onTap!(context, task);
+      return;
+    }
+    setStatus(context);
   }
 
   setStatus(BuildContext context) async {

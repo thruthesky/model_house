@@ -3,15 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:model_house/model_house.dart';
 import 'package:model_house/task/widgets/task.tile.dart';
 
-class TodoListScreen extends StatefulWidget {
+class MyTaskChecklistScreen extends StatefulWidget {
   static const String routeName = '/TodoList';
-  const TodoListScreen({super.key});
+  const MyTaskChecklistScreen({super.key});
 
   @override
-  State<TodoListScreen> createState() => _TodoListScreenState();
+  State<MyTaskChecklistScreen> createState() => _MyTaskChecklistScreenState();
 }
 
-class _TodoListScreenState extends State<TodoListScreen> {
+class _MyTaskChecklistScreenState extends State<MyTaskChecklistScreen> {
   final TextEditingController _title = TextEditingController();
 
   @override

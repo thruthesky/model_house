@@ -1,5 +1,6 @@
 import 'package:example/todo_app/screens/home/home.screen.dart';
-import 'package:example/todo_app/screens/todo/todo.list.screen.dart';
+import 'package:example/todo_app/screens/task/my.task.checklist.screen.dart';
+import 'package:example/todo_app/screens/task/task.create.screen.dart';
 import 'package:example/todo_app/screens/user/profile.screen.dart';
 import 'package:example/todo_app/screens/user/sign_in.screen.dart';
 import 'package:flutter/material.dart';
@@ -17,8 +18,12 @@ final todoRouter = GoRouter(
       builder: (context, state) => const HomeScreen(),
     ),
     GoRoute(
-      path: TodoListScreen.routeName,
-      builder: (context, state) => const TodoListScreen(),
+      path: TaskCreateScreen.routeName,
+      builder: (context, state) => const TaskCreateScreen(),
+    ),
+    GoRoute(
+      path: MyTaskChecklistScreen.routeName,
+      builder: (context, state) => const MyTaskChecklistScreen(),
     ),
     GoRoute(
       path: SignInScreen.routeName,

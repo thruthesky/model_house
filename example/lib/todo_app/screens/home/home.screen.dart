@@ -1,4 +1,5 @@
-import 'package:example/todo_app/screens/todo/todo.list.screen.dart';
+import 'package:example/todo_app/screens/task/my.task.checklist.screen.dart';
+import 'package:example/todo_app/screens/task/task.create.screen.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:model_house/user/user.defines.dart';
@@ -39,7 +40,13 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                       ElevatedButton(
                         onPressed: () {
-                          context.push(TodoListScreen.routeName);
+                          context.push(TaskCreateScreen.routeName);
+                        },
+                        child: const Text('Create Task'),
+                      ),
+                      ElevatedButton(
+                        onPressed: () {
+                          context.push(MyTaskChecklistScreen.routeName);
                         },
                         child: const Text('TODO CheckList'),
                       ),
