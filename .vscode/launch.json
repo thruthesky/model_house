@@ -18,7 +18,7 @@
             "type": "dart",
             "deviceId": "iPhone 15 Pro Max",
             "cwd": "example",
-            "program": "lib/main.dart"
+            "program": "lib/main.todo.dart"
         },
         {
             "name": "TEST - iOS Simulator - iPhone 15 Pro Max",

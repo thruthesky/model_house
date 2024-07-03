@@ -1,7 +1,18 @@
+import 'package:example/firebase_options.dart';
 import 'package:example/todo_app/todo_app.router.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:model_house/translation/translation.service.dart';
 
-main() {
+main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  TranslationService.instance.init(
+    deviceLocale: true,
+    defaultLocale: 'ko',
+    fallbackLocale: 'en',
+    useKeyAsDefaultText: false,
+  );
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(const TodoApp());
 }
 

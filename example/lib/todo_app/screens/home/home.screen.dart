@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:model_house/user/user.defines.dart';
+import 'package:model_house/user/widgets/auth_state_changes.dart';
+import 'package:model_house/user/widgets/display_name.dart';
+import 'package:model_house/widgets/auth/email_password_login.dart';
 
 class HomeScreen extends StatefulWidget {
   static const String routeName = '/';
@@ -15,9 +19,29 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(
         title: const Text('Home'),
       ),
-      body: const Column(
+      body: Column(
         children: [
-          Text("Home"),
+          //
+          iam.signedIn
+              ? const Text('Yes, sign in !!')
+              : const Text('Not signed In'),
+          AuthStateChanges(
+            builder: (user) => user == null
+                ? const EmailPasswordLogin()
+                : Column(
+                    children: [
+                      Text(user.uid),
+                      DisplayName(
+                        uid: user.uid,
+                        initialData: user.displayName,
+                      ),
+                      ElevatedButton(
+                        onPressed: () => i.signOut(),
+                        child: const Text('Logout'),
+                      ),
+                    ],
+                  ),
+          ),
         ],
       ),
     );
