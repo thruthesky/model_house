@@ -41,12 +41,12 @@ class _TodoListScreenState extends State<TodoListScreen> {
                         ),
                       ),
                       Checkbox(
-                        value: task.status == TaskStatus.completed,
+                        value: task.isCompleted,
                         onChanged: (value) {
                           if (value == true) {
-                            task.update(status: TaskStatus.completed);
+                            task.updateStatus(TaskStatus.done);
                           } else if (value == false) {
-                            task.update(status: TaskStatus.todo);
+                            task.updateStatus(TaskStatus.todo);
                           }
                         },
                       ),
@@ -95,10 +95,14 @@ class _TodoListScreenState extends State<TodoListScreen> {
   }
 
   _addTodo() async {
+    // TODO must come from correct source
+    final uid = FirebaseAuth.instance.currentUser!.uid;
     await Task.create(
       title: _title.text,
-      // TODO must come from correct source
-      creatorUid: FirebaseAuth.instance.currentUser!.uid,
+      creatorUid: uid,
+      assigned: {
+        uid: TaskStatus.todo,
+      },
     );
     _title.clear();
   }

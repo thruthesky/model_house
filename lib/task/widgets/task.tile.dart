@@ -6,24 +6,30 @@ class TaskTile extends StatelessWidget {
   const TaskTile({
     super.key,
     required this.task,
+    this.buider,
   });
 
   final Task task;
+  final Widget Function(
+    BuildContext context,
+    Task task,
+  )? buider;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        border: Border.all(
-          color: Colors.black,
-        ),
-      ),
-      child: ListTile(
-        title: Text(task.title ?? ""),
-        subtitle: Text(task.status.name),
-        onTap: () => setStatus(context),
-      ),
-    );
+    return buider?.call(context, task) ??
+        Container(
+          decoration: BoxDecoration(
+            border: Border.all(
+              color: Colors.black,
+            ),
+          ),
+          child: ListTile(
+            title: Text(task.title ?? ""),
+            subtitle: Text(task.status?.name ?? ""),
+            onTap: () => setStatus(context),
+          ),
+        );
   }
 
   setStatus(BuildContext context) async {
@@ -44,18 +50,18 @@ class TaskTile extends StatelessWidget {
             if (task.creatorUid == FirebaseAuth.instance.currentUser?.uid)
               ListTile(
                 title: const Text("COMPLETED"),
-                onTap: () => Navigator.pop(context, TaskStatus.completed),
+                onTap: () => Navigator.pop(context, TaskStatus.done),
               )
             else
               ListTile(
-                title: const Text("COMPLETED"),
-                onTap: () => Navigator.pop(context, TaskStatus.completed),
+                title: const Text("REVIEW"),
+                onTap: () => Navigator.pop(context, TaskStatus.review),
               ),
           ]),
         );
       },
     );
     if (status == null) return;
-    await task.update(status: status);
+    await task.updateStatus(status);
   }
 }

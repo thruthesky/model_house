@@ -19,7 +19,7 @@ class TaskListTile extends StatelessWidget {
       ),
       child: ListTile(
         title: Text(todo.title ?? ""),
-        subtitle: Text(todo.status.name),
+        subtitle: Text(todo.status?.name ?? ""),
         onTap: () => _setStatus(context),
       ),
     );
@@ -42,7 +42,7 @@ class TaskListTile extends StatelessWidget {
             ),
             ListTile(
               title: const Text("COMPLETED"),
-              onTap: () => Navigator.pop(context, TaskStatus.completed),
+              onTap: () => Navigator.pop(context, TaskStatus.done),
             ),
           ]),
         );

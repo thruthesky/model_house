@@ -25,8 +25,22 @@ enum TaskStatus {
 /// The status of an Entity can be Todo, Ongoing, Review, Done.
 /// This indicates the status of what the doer is doing.
 ///
-/// TODO: review
-/// However, a Task can be assigned to multiple people.
+/// However, a Task can be assigned to multiple people. So the structure
+/// of `assigned` field is like...
+///
+/// ```json
+/// {
+///   'uid-1': 'todo',
+///   'uid-2': 'ongoing',
+///   'uid-3': 'review',
+///   'uid-4': 'ongoing',
+///   'uid-5': 'done',
+///   ...
+/// }
+/// ```
+///
+/// This allows the task to be assigned to multiple people, as well as
+/// recording the status of what the doer is doing to the task.
 ///
 /// ### Approval (Accepted, Rejected)
 ///
@@ -38,7 +52,7 @@ enum TaskStatus {
 /// doing (as above mentioned) because it will be more confusing.
 ///
 /// If the user has completed a task, and is not the creator of the task,
-/// it will have a status of `Review`, instead of `Completed`. The assigner (or
+/// it should have a status of `Review`, instead of `Done`. The assigner (or
 /// the creator) of the task will approve or reject the task.
 ///
 /// Approved Tasks
@@ -57,15 +71,19 @@ class Task {
 
   String id;
   String? title;
-  // bool completed;
   String? creatorUid;
+  Timestamp? createdAt;
 
   /// This [assigned] is a Map<{String uid}, TaskStatus>. This
   /// is used to assign and track the statuses of
   Map<String, TaskStatus> assigned;
   // groupId
 
+  /// The status if it is assigned to the current user.
   TaskStatus? get status => assigned[FirebaseAuth.instance.currentUser!.uid];
+
+  /// Check if status is done
+  bool get isCompleted => status == TaskStatus.done;
 
   Task({
     required this.id,
@@ -74,6 +92,7 @@ class Task {
     this.creatorUid,
     // this.status = TaskStatus.todo,
     this.assigned = const {},
+    this.createdAt,
   });
 
   factory Task.fromJson(Map<String, dynamic> json, {required String id}) {
@@ -84,6 +103,7 @@ class Task {
       // completed: json['completed'],
       creatorUid: json['creatorUid'],
       assigned: _assignedFromMap(json['assigned'] ?? {}),
+      createdAt: json['createdAt'],
     );
   }
 
@@ -104,7 +124,7 @@ class Task {
   /// Helper to map the assigned map value from Map<dynamic, String>
   static Map<String, TaskStatus> _assignedFromMap(Object map) =>
       (Map<String, dynamic>.from(map as Map<dynamic, dynamic>))
-          .map((uid, e) => MapEntry(uid, TaskStatus.values.byName(e.value)));
+          .map((uid, e) => MapEntry(uid, TaskStatus.values.byName(e)));
 
   /// Create a new Task
   ///
@@ -115,20 +135,21 @@ class Task {
     required String title,
     String? creatorUid,
     TaskStatus status = TaskStatus.todo,
-    Map<String, TaskStatus>? assigned = const {},
+    Map<String, TaskStatus> assigned = const {},
   }) async {
     final createData = {
       'title': title,
-      // 'completed': false,
       'creatorUid': creatorUid,
-      'status': status.name,
+      'assigned': assigned.map((uid, status) => MapEntry(uid, status.name)),
+      'createdAt': FieldValue.serverTimestamp(),
     };
     final ref = await col.add(createData);
     return Task(
       id: ref.id,
       title: title,
       creatorUid: creatorUid,
-      assigned: assigned ?? {},
+      assigned: assigned,
+      createdAt: Timestamp.now(),
     );
   }
 
@@ -144,9 +165,7 @@ class Task {
   }) async {
     final updateData = {
       if (title != null) 'title': title,
-      // 'completed': completed ?? this.completed,
       if (creatorUid != null) 'creatorUid': creatorUid,
-      // if (status != null) 'status': status.name,
       if (assigned != null) 'assigned': assigned,
     };
 
@@ -168,7 +187,7 @@ class Task {
       'assigned': {
         FirebaseAuth.instance.currentUser!.uid: status.name,
       }
-    });
+    }, SetOptions(merge: true));
     assigned[FirebaseAuth.instance.currentUser!.uid] = status;
   }
 
