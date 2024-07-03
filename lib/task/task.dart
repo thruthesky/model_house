@@ -24,6 +24,9 @@ enum TaskStatus {
 /// The status of an Entity can be Todo, Ongoing, Review, Completed.
 /// This indicates the status of what the doer is doing.
 ///
+/// TODO: review
+/// However, a Task can be assigned to multiple people.
+///
 /// ### Approval (Accepted, Rejected)
 ///
 /// For Accepted and Rejected, it is considered a separate status since,
@@ -49,14 +52,14 @@ class Task {
 
   /// Document Reference for the Firestore Document
   /// That is `todos/{id}/{...}`
-  DocumentReference get doc =>
-      FirebaseFirestore.instance.collection('todos').doc(id);
+  DocumentReference get doc => col.doc(id);
 
   String id;
   String? title;
   // bool completed;
   String? creatorUid;
   // groupId
+  // TODO review
   TaskStatus status;
 
   Task({
@@ -115,7 +118,30 @@ class Task {
     );
   }
 
-  update() {}
+  /// Update the task fields
+  ///
+  /// Note: This will not be able to nullify the field.
+  Future<Task> update({
+    String? title,
+    // bool? completed,
+    String? creatorUid,
+    TaskStatus? status,
+  }) async {
+    final updateData = {
+      if (title != null) 'title': title,
+      // 'completed': completed ?? this.completed,
+      if (creatorUid != null) 'creatorUid': creatorUid,
+      if (status != null) 'status': status.name,
+    };
+
+    await doc.update(updateData);
+
+    this.title = title;
+    //   this.completed = completed ?? this.completed;
+    this.creatorUid = creatorUid;
+    this.status = status ?? this.status;
+    return this;
+  }
 
   delete() {}
 }

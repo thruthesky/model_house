@@ -1,7 +1,7 @@
-import 'package:example/todo_app/screens/todo/widget/task.list_tile.dart';
-import 'package:firebase_ui_firestore/firebase_ui_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:model_house/model_house.dart';
+import 'package:model_house/task/widgets/task.tile.dart';
 
 class TodoListScreen extends StatefulWidget {
   static const String routeName = '/TodoList';
@@ -24,18 +24,34 @@ class _TodoListScreenState extends State<TodoListScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Todo List'),
+        title: const Text('Todo Check List'),
       ),
       body: Column(
         children: [
           Expanded(
             child: Padding(
               padding: const EdgeInsets.all(8.0),
-              child: FirestoreListView(
-                query: Task.col,
-                itemBuilder: (context, doc) {
-                  final todo = Task.fromSnapshot(doc);
-                  return TaskListTile(todo: todo);
+              child: TaskListView(
+                itemBuilder: (context, task) {
+                  return Row(
+                    children: [
+                      Expanded(
+                        child: TaskTile(
+                          task: task,
+                        ),
+                      ),
+                      Checkbox(
+                        value: task.status == TaskStatus.completed,
+                        onChanged: (value) {
+                          if (value == true) {
+                            task.update(status: TaskStatus.completed);
+                          } else if (value == false) {
+                            task.update(status: TaskStatus.todo);
+                          }
+                        },
+                      ),
+                    ],
+                  );
                 },
               ),
             ),
@@ -81,7 +97,8 @@ class _TodoListScreenState extends State<TodoListScreen> {
   _addTodo() async {
     await Task.create(
       title: _title.text,
-      creatorUid: iam.user?.uid,
+      // TODO must come from correct source
+      creatorUid: FirebaseAuth.instance.currentUser!.uid,
     );
     _title.clear();
   }
