@@ -44,27 +44,76 @@ enum TaskStatus {
 ///   - They will have the status of `Todo` but the assigner must
 ///     write feedback.
 class Task {
-  final CollectionReference col =
+  static CollectionReference col =
       FirebaseFirestore.instance.collection('tasks');
 
+  /// Document Reference for the Firestore Document
+  /// That is `todos/{id}/{...}`
+  DocumentReference get doc =>
+      FirebaseFirestore.instance.collection('todos').doc(id);
+
+  String id;
   String? title;
-  bool completed;
+  // bool completed;
+  String? creatorUid;
+  // groupId
+  TaskStatus status;
 
   Task({
+    required this.id,
     this.title,
-    this.completed = false,
+    // this.completed = false,
+    this.creatorUid,
+    this.status = TaskStatus.todo,
   });
 
-  Task.fromJson(Map<String, dynamic> json)
+  Task.fromJson(Map<String, dynamic> json, {required this.id})
       : title = json['title'],
-        completed = json['completed'];
+        // completed = json['completed']
+        creatorUid = json['creatorUid'],
+        status = json['status'] == null
+            ? TaskStatus.todo
+            : TaskStatus.values.byName(json['status']);
+
+  static Task fromSnapshot(QueryDocumentSnapshot<Object?> doc) {
+    final data = Map<String, dynamic>.from((doc.data() ?? {}) as Map);
+    return Task.fromJson(data, id: doc.id);
+  }
 
   Map<String, dynamic> toJson() => {
         'title': title,
-        'completed': completed,
+        // 'completed': completed,
+        'creatorUid': creatorUid,
+        'status': status.name,
       };
 
-  create() {}
+  @override
+  String toString() => toJson().toString();
+
+  /// Create a new Task
+  ///
+  /// This will create a doc in Firestore.
+  ///
+  /// Returns `Task`.
+  static Future<Task> create({
+    required String title,
+    String? creatorUid,
+    TaskStatus status = TaskStatus.todo,
+  }) async {
+    final createData = {
+      'title': title,
+      // 'completed': false,
+      'creatorUid': creatorUid,
+      'status': status.name,
+    };
+    final ref = await col.add(createData);
+    return Task(
+      id: ref.id,
+      title: title,
+      creatorUid: creatorUid,
+      status: status,
+    );
+  }
 
   update() {}
 

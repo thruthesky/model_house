@@ -22,3 +22,9 @@ export './user/widgets/auth_state_changes.dart';
 export './user/widgets/display_name.dart';
 
 export './widgets/input/label_field.dart';
+
+// for todo
+export './todo/task.dart';
+export './todo/task.service.dart';
+export './todo/widgets/task.list_view.dart';
+export './todo/widgets/task.grid_view.dart';
