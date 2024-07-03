@@ -19,7 +19,7 @@
 - Message 서비스를 활성화 한다.
 
 
-## 앱 설치
+## 앱 설치와 dependencies 설치
 
 늘 하던대로 flutter create 하고 flutterfire configure 를 한다. 참고로, Firebase SDK 는 `하우스`에 설치된 것과 동일한 버전으로 설치해야 하는데, [모델하우스 pubspec.yaml](https://github.com/thruthesky/model_house/blob/main/pubspec.yaml)파일을 참고한다.
 
@@ -40,4 +40,25 @@ flutterfire config -a com.modelhouse.example -i com.modelhouse.example -p withce
 
 
 그리고 아래와 같이 코딩하면 된다.
+
+
+
+## 클라우드 함수 설치
+
+## 파이어베이스 Security rules 설치
+
+
+
+
+## iOS 추가 설치
+
+언어, 카메라 entitlement
+
+
+## 간단한 예제 앱
+
+
+
+## FireFlutter 패키지를 개발자 모드로 설치하기
+
 

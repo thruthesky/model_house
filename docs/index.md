@@ -4,6 +4,9 @@
 
 `모델하우스`는 [FireFlutter](https://thruthesky.github.io/fireflutter/korean/)의 다음 버전이며, 본 프로젝트가 잘 진행되면 기존의 [FireFireflutter](https://thruthesky.github.io/fireflutter/korean/)를 대체하게 될 것이다.
 
+하우스의 첫번째 버전은 FireFlutter 의 개념을 그대로 가져오고 수정, 보완하는 것인데, FireFlutter 는 Realtime Database 기반인데 개발자들이 어려워하는 경향이 있고 사용하기를 꺼려한다. 그래서, 하우스에서는 Firestore 를 메인으로 하되 꼭 필요한 부분은 Realtime Database 를 사용한다는 계획이다.
+
+
 
 ## 개요
 

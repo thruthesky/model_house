@@ -1,4 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:memory_cache/memory_cache.dart';
+import 'package:model_house/model_house.dart';
 
 /// User model
 ///
@@ -33,8 +35,15 @@ class User {
     );
   }
 
-  factory User.fromSnapshot(DocumentSnapshot<Map<String, dynamic>> snapshot) {
-    final data = snapshot.data()!;
+  factory User.fromSnapshot(DocumentSnapshot<Object?> snapshot) {
+    if (snapshot.exists == false) {
+      throw HouseException('User.fromSnapshot', 'Document does not exist.');
+    }
+    final Map<String, dynamic>? data = snapshot.data() as Map<String, dynamic>?;
+    if (data == null) {
+      throw HouseException('User.fromSnapshot', 'Document is null.');
+    }
+
     return User(
       uid: snapshot.id,
       name: data['name'],
@@ -55,6 +64,23 @@ class User {
     data['name'] = name;
     data['gender'] = gender;
     return data;
+  }
+
+  Future<User?> get(String uid) async {
+    User? user = MemoryCache.instance.read<User?>(uid);
+    if (user != null) {
+      return user;
+    }
+    final DocumentSnapshot snapshot = await col.doc(uid).get();
+    if (snapshot.exists) {
+      user = User.fromSnapshot(snapshot);
+      MemoryCache.instance.create(uid, user);
+      return user;
+    }
+
+    /// It overrides the exisiting cache
+    MemoryCache.instance.create<User?>(uid, user);
+    return user;
   }
 
   /// Deprecated
