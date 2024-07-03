@@ -22,6 +22,8 @@ class _TaskCreateScreenState extends State<TaskCreateScreen> {
     super.dispose();
   }
 
+  Widget get spaceMd => const SizedBox(height: 12.0);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -39,7 +41,7 @@ class _TaskCreateScreenState extends State<TaskCreateScreen> {
               ),
               controller: _title,
             ),
-            const SizedBox(height: 12.0),
+            spaceMd,
             TextField(
               decoration: const InputDecoration(
                 border: OutlineInputBorder(),
@@ -47,6 +49,7 @@ class _TaskCreateScreenState extends State<TaskCreateScreen> {
               ),
               controller: _description,
             ),
+            spaceMd,
           ],
         ),
       ),
