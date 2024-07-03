@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 /// # Task Status
 ///
@@ -8,7 +9,7 @@ enum TaskStatus {
   todo,
   ongoing,
   review,
-  completed,
+  done,
 }
 
 /// # Task entity class
@@ -19,9 +20,9 @@ enum TaskStatus {
 ///
 /// ## Logic
 ///
-/// ### Status (Todo, Ongoing, Review, Completed)
+/// ### Status (Todo, Ongoing, Review, Done)
 ///
-/// The status of an Entity can be Todo, Ongoing, Review, Completed.
+/// The status of an Entity can be Todo, Ongoing, Review, Done.
 /// This indicates the status of what the doer is doing.
 ///
 /// TODO: review
@@ -58,25 +59,33 @@ class Task {
   String? title;
   // bool completed;
   String? creatorUid;
+
+  /// This [assigned] is a Map<{String uid}, TaskStatus>. This
+  /// is used to assign and track the statuses of
+  Map<String, TaskStatus> assigned;
   // groupId
-  // TODO review
-  TaskStatus status;
+
+  TaskStatus? get status => assigned[FirebaseAuth.instance.currentUser!.uid];
 
   Task({
     required this.id,
     this.title,
     // this.completed = false,
     this.creatorUid,
-    this.status = TaskStatus.todo,
+    // this.status = TaskStatus.todo,
+    this.assigned = const {},
   });
 
-  Task.fromJson(Map<String, dynamic> json, {required this.id})
-      : title = json['title'],
-        // completed = json['completed']
-        creatorUid = json['creatorUid'],
-        status = json['status'] == null
-            ? TaskStatus.todo
-            : TaskStatus.values.byName(json['status']);
+  factory Task.fromJson(Map<String, dynamic> json, {required String id}) {
+    // final assigned = Map<String, TaskStatus>.from(json['assigned']);
+    return Task(
+      id: id,
+      title: json['title'],
+      // completed: json['completed'],
+      creatorUid: json['creatorUid'],
+      assigned: _assignedFromMap(json['assigned'] ?? {}),
+    );
+  }
 
   static Task fromSnapshot(QueryDocumentSnapshot<Object?> doc) {
     final data = Map<String, dynamic>.from((doc.data() ?? {}) as Map);
@@ -85,13 +94,17 @@ class Task {
 
   Map<String, dynamic> toJson() => {
         'title': title,
-        // 'completed': completed,
         'creatorUid': creatorUid,
-        'status': status.name,
+        'assigned': assigned.map((uid, status) => MapEntry(uid, status.name)),
       };
 
   @override
   String toString() => toJson().toString();
+
+  /// Helper to map the assigned map value from Map<dynamic, String>
+  static Map<String, TaskStatus> _assignedFromMap(Object map) =>
+      (Map<String, dynamic>.from(map as Map<dynamic, dynamic>))
+          .map((uid, e) => MapEntry(uid, TaskStatus.values.byName(e.value)));
 
   /// Create a new Task
   ///
@@ -102,6 +115,7 @@ class Task {
     required String title,
     String? creatorUid,
     TaskStatus status = TaskStatus.todo,
+    Map<String, TaskStatus>? assigned = const {},
   }) async {
     final createData = {
       'title': title,
@@ -114,7 +128,7 @@ class Task {
       id: ref.id,
       title: title,
       creatorUid: creatorUid,
-      status: status,
+      assigned: assigned ?? {},
     );
   }
 
@@ -125,13 +139,15 @@ class Task {
     String? title,
     // bool? completed,
     String? creatorUid,
-    TaskStatus? status,
+    // TaskStatus? status,
+    Map<String, TaskStatus>? assigned,
   }) async {
     final updateData = {
       if (title != null) 'title': title,
       // 'completed': completed ?? this.completed,
       if (creatorUid != null) 'creatorUid': creatorUid,
-      if (status != null) 'status': status.name,
+      // if (status != null) 'status': status.name,
+      if (assigned != null) 'assigned': assigned,
     };
 
     await doc.update(updateData);
@@ -139,8 +155,21 @@ class Task {
     this.title = title;
     //   this.completed = completed ?? this.completed;
     this.creatorUid = creatorUid;
-    this.status = status ?? this.status;
+    // this.status = status ?? this.status;
+    this.assigned = assigned ?? this.assigned;
     return this;
+  }
+
+  /// [updateStatus] updates status in Firestore
+  ///
+  /// This status is for the current user.
+  Future<void> updateStatus(TaskStatus status) async {
+    await doc.set({
+      'assigned': {
+        FirebaseAuth.instance.currentUser!.uid: status.name,
+      }
+    });
+    assigned[FirebaseAuth.instance.currentUser!.uid] = status;
   }
 
   delete() {}
