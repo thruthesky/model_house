@@ -1,4 +1,4 @@
-class ChatCode {
+class ChatErrorCode {
   /// ERROR CODES
   final String disabled = 'disabled';
   final String notJoined = 'chat-room-not-joined';

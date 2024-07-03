@@ -91,7 +91,9 @@ class User {
   @Deprecated('This is not for use.')
   static create({
     required String uid,
-  }) {}
+  }) {
+    throw HouseException(code.house.notForUse, 'User.create is not for use.');
+  }
 
   Future update() async {
     await doc.set({'name': name}, SetOptions(merge: true));

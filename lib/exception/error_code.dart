@@ -6,4 +6,8 @@ class ErrorCode {
   ErrorCode._();
 
   UserErrorCode user = UserErrorCode();
+  HouseErrorCode house = HouseErrorCode();
+  ChatErrorCode chat = ChatErrorCode();
 }
+
+final code = ErrorCode.instance;
