@@ -5,12 +5,20 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "iOS Simulator - iPhone 15 Pro Max",
+            "name": "Simple - iOS Simulator - iPhone 15 Pro Max",
             "request": "launch",
             "type": "dart",
             "deviceId": "iPhone 15 Pro Max",
             "cwd": "example",
-            "program": "lib/main.dart"
+            "program": "lib/main.simple.dart"
+        },
+        {
+            "name": "User - iOS Simulator - iPhone 15 Pro Max",
+            "request": "launch",
+            "type": "dart",
+            "deviceId": "iPhone 15 Pro Max",
+            "cwd": "example",
+            "program": "lib/main.user.dart"
         },
         {
             "name": "TODO Example - iPhone 15 Pro Max",
@@ -26,7 +34,7 @@
             "type": "dart",
             "deviceId": "iPhone 15 Pro Max",
             "cwd": "example",
-            "program": "lib/test.main.dart"
+            "program": "lib/main.test.dart"
         },
         {
             "name": "model_house (profile mode)",

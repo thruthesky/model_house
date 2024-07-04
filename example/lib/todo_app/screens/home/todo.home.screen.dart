@@ -7,15 +7,15 @@ import 'package:model_house/user/widgets/auth_state_changes.dart';
 import 'package:model_house/user/widgets/display_name.dart';
 import 'package:model_house/widgets/auth/email_password_login.dart';
 
-class HomeScreen extends StatefulWidget {
+class TodoHomeScreen extends StatefulWidget {
   static const String routeName = '/';
-  const HomeScreen({super.key});
+  const TodoHomeScreen({super.key});
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  State<TodoHomeScreen> createState() => _TodoHomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _TodoHomeScreenState extends State<TodoHomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(

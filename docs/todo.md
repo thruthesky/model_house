@@ -37,8 +37,13 @@ failure -> [re-assign | achive | delete]
 - when the moderator rejects; properties: comment, ... the task can be re-assigned to someone else.
 
 
+'uid-1': { status: "", beginDate: "2024-07-04", endDate: "2024-08-01", comment: ".....", ......  }, 1M limit
+status is is empty
+date: is ongoing
 
-'uid-1': { status: "", beginDate: "2024-07-04", endDate: "2024-08-01" },
+
+
+
 
 ///   'uid-2': {status: 'rejected', },
 ///   'uid-3': 'review',
@@ -59,8 +64,8 @@ task7 {
         uid-3 { ... }
         uid-4 { ... }
 }
-...
-...
+/users/privte/"task-assigned"/ ... documents ...
+/todo/people/works/tomorrow/"task_assgned"/ ... many documetns ...
 ...
 
 

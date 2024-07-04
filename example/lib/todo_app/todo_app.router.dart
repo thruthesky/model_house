@@ -1,4 +1,4 @@
-import 'package:example/todo_app/screens/home/home.screen.dart';
+import 'package:example/todo_app/screens/home/todo.home.screen.dart';
 import 'package:example/todo_app/screens/task/task.create.screen.dart';
 import 'package:example/todo_app/screens/task/task.list.screen.dart';
 import 'package:example/todo_app/screens/user/profile.screen.dart';
@@ -14,8 +14,8 @@ final todoRouter = GoRouter(
   navigatorKey: globalNavigatorKey,
   routes: [
     GoRoute(
-      path: HomeScreen.routeName,
-      builder: (context, state) => const HomeScreen(),
+      path: TodoHomeScreen.routeName,
+      builder: (context, state) => const TodoHomeScreen(),
     ),
     GoRoute(
       path: TaskCreateScreen.routeName,

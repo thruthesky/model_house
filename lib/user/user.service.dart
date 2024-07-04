@@ -29,19 +29,20 @@ class UserService {
   listenUserDocumentChanges() {
     firebaseAuthSubscription?.cancel();
     firebaseAuthSubscription =
+        // .distinct((p, n) => p?.user?.uid == n?.user?.uid)
         fa.FirebaseAuth.instance.authStateChanges().listen((faUser) async {
       /// User state changed
       if (faUser == null) {
         user = null;
+        changes.add(user);
+        dog('faUser is null');
       } else {
+        dog('faUser is not null');
+
         /// User signed in. Listen to the user's document changes.
         firestoreMyDocSubscription?.cancel();
 
-        /// User data must be updated first, before listening to the user's
-        /// document changes because if the user document does not exist,
-        /// the listen will not be triggered.
-        /// ! @thruthesky - Dobule check on it!!
-        User.fromUid(faUser.uid).updateOnAuthStateChange();
+        await User.fromUid(faUser.uid).updateOnAuthStateChange();
         firestoreMyDocSubscription = FirebaseFirestore.instance
             .collection('users')
             .doc(faUser.uid)

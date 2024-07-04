@@ -11,6 +11,7 @@ class User {
   String uid;
   String? name;
   String? gender;
+  DateTime updatedAt;
 
   CollectionReference col = FirebaseFirestore.instance.collection('users');
   DocumentReference get doc => col.doc(uid);
@@ -19,6 +20,7 @@ class User {
     required this.uid,
     this.name,
     this.gender,
+    required this.updatedAt,
   });
 
   /// Create a user with the given [uid].
@@ -29,9 +31,16 @@ class User {
   ///
   /// Use this when you need to use the method of the user model class. And do
   /// not use the fields of the user model class.
+  ///
+  ///
+  /// uid 로 부터 사용자 객체 생성
+  ///
+  /// 주로, uid 값만 알고 있는 경우, 해당 uid 를 바탕으로 User 클래스 함수를 사용하고자 할 때
+  /// 사용한다.
   factory User.fromUid(String uid) {
     return User(
       uid: uid,
+      updatedAt: DateTime.now(),
     );
   }
 
@@ -44,18 +53,17 @@ class User {
       throw HouseException('User.fromSnapshot', 'Document is null.');
     }
 
-    return User(
-      uid: snapshot.id,
-      name: data['name'],
-      gender: data['gender'],
-    );
+    return User.fromJson(data, snapshot.id);
   }
 
-  factory User.fromJson(Map<String, dynamic> json) {
+  factory User.fromJson(Map<String, dynamic> json, String uid) {
     return User(
-      uid: json['uid'],
+      uid: uid,
       name: json['name'],
       gender: json['gender'],
+      updatedAt: json['updatedAt'] is Timestamp
+          ? (json['updatedAt'] as Timestamp).toDate()
+          : DateTime.now(),
     );
   }
 
@@ -99,6 +107,16 @@ class User {
     await doc.set({'name': name}, SetOptions(merge: true));
   }
 
+  /// 로그인 할 때, 'updatedAt' 을 업데이트
+  ///
+  /// 특히, 사용자의 문서를 listen 하기전에 문서가 미리 존재해야하는데, listen 하기 전에
+  /// 이 함수를 이용해서, 문서가 존재하는 것을 보장한다.
+  ///
+  /// Updates "updatedAt" field on user's auth state changes (logs in).
+  ///
+  /// This is because the listener will not listen if the document does not
+  /// eixsts, and this makes sure the document to be exist.
+  ///
   Future updateOnAuthStateChange() async {
     await doc.set(
       {

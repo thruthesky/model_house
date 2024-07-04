@@ -7,6 +7,10 @@ final translationTexts = {
     'en': 'Name',
     'ko': '이름',
   },
+  'email': {
+    'en': 'Email',
+    'ko': '이메일',
+  },
   'there are {n} apple': {
     'en': {
       'zero': 'There is no apple',
