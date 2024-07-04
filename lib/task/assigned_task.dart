@@ -152,4 +152,18 @@ class AssignedTask {
       createdAt: Timestamp.now(),
     );
   }
+
+  Future<AssignedTask> update({
+    String? status,
+  }) async {
+    final updateData = {
+      if (status != null) 'status': status,
+    };
+
+    await doc.update(updateData);
+
+    this.status = status ?? this.status;
+
+    return this;
+  }
 }

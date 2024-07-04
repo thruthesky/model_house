@@ -2,13 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:model_house/model_house.dart';
 import 'package:model_house/task/widgets/assigned_task.list_view.dart';
 
-class TaskView extends StatelessWidget {
-  const TaskView({
+class TaskViewScreen extends StatelessWidget {
+  const TaskViewScreen({
     super.key,
     required this.task,
   });
 
   final Task task;
+
+  Widget get space => const SizedBox(height: 12);
 
   @override
   Widget build(BuildContext context) {
@@ -22,13 +24,16 @@ class TaskView extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text("Title: ${task.title}"),
+            space,
             Text("Description: ${task.description}"),
+            space,
+            const Text("Assigned to:"),
             Expanded(
               child: AssignedTaskListView(
                 taskId: task.id,
               ),
             ),
-            const SizedBox(height: 24),
+            space,
             SafeArea(
               child: ElevatedButton(
                 onPressed: () {},

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:model_house/task/assigned_task.dart';
+import 'package:model_house/task/widgets/assigned_task.view.screen.dart';
 
 class AssignedTaskListTile extends StatelessWidget {
   const AssignedTaskListTile({
@@ -22,13 +23,13 @@ class AssignedTaskListTile extends StatelessWidget {
         title: Text(assignedTask.assigneeUid),
         subtitle: Text("Status: ${assignedTask.status}"),
         onTap: () {
-          showAssignedListTileView();
+          showGeneralDialog(
+            context: context,
+            pageBuilder: (context, a1, a2) =>
+                AssignedTaskViewScreen(assignedTask: assignedTask),
+          );
         },
       ),
     );
-  }
-
-  showAssignedListTileView() {
-    // TODO
   }
 }

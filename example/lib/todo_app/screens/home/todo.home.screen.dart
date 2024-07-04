@@ -48,7 +48,13 @@ class _TodoHomeScreenState extends State<TodoHomeScreen> {
                         onPressed: () {
                           context.push(TaskListScreen.routeName);
                         },
-                        child: const Text('TODO CheckList'),
+                        child: const Text('Task List'),
+                      ),
+                      ElevatedButton(
+                        onPressed: () {
+                          context.push(TaskListScreen.routeName);
+                        },
+                        child: const Text('Assigned List'),
                       ),
                       ElevatedButton(
                         onPressed: () => i.signOut(),

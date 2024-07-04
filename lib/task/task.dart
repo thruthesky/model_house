@@ -129,6 +129,7 @@ class Task {
   static Future<Task> create({
     required String title,
     String? description,
+    required List<String> assignedUids,
   }) async {
     final creatorUid = FirebaseAuth.instance.currentUser?.uid;
     final createData = {
@@ -138,17 +139,16 @@ class Task {
       'createdAt': FieldValue.serverTimestamp(),
     };
     final ref = await col.add(createData);
-    AssignedTask.create(
-      taskId: ref.id,
-      uid: creatorUid!,
-    );
-    return Task(
+    final task = Task(
       id: ref.id,
       title: title,
       description: description,
       creatorUid: creatorUid,
       createdAt: Timestamp.now(),
     );
+    // Check if we need to await here
+    task.assign(uids: assignedUids);
+    return task;
   }
 
   /// Update the task fields
@@ -156,16 +156,21 @@ class Task {
   /// Note: This will not be able to nullify the field.
   Future<Task> update({
     String? title,
-    // bool? completed,
+    String? description,
     String? creatorUid,
+    Timestamp? createdAt,
+    Timestamp? startAt,
+    Timestamp? endAt,
   }) async {
     final updateData = {
       if (title != null) 'title': title,
+      if (description != null) 'description': description,
       if (creatorUid != null) 'creatorUid': creatorUid,
+      if (createdAt != null) 'createdAt': createdAt,
+      if (startAt != null) 'startAt': startAt,
+      if (endAt != null) 'endAt': endAt,
     };
-
     await doc.update(updateData);
-
     this.title = title;
     this.creatorUid = creatorUid;
     return this;
@@ -178,8 +183,12 @@ class Task {
   getAssignee() {}
 
   /// Create a new Assigned Task for each uid
-  // Future<List<AssignedTask>>
-  assign({required List<String> uids}) {
-    // TODO
+  Future<List<AssignedTask>> assign({required List<String> uids}) async {
+    final assignedFutures = uids
+        .map((uid) async => await AssignedTask.create(taskId: id, uid: uid))
+        .toList();
+    final List<AssignedTask> assignedTasks =
+        await Future.wait<AssignedTask>(assignedFutures);
+    return assignedTasks;
   }
 }

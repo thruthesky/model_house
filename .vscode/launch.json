@@ -29,6 +29,14 @@
             "program": "lib/main.todo.dart"
         },
         {
+            "name": "TODO Example - iPhone SE",
+            "request": "launch",
+            "type": "dart",
+            "deviceId": "iPhone SE",
+            "cwd": "example",
+            "program": "lib/main.todo.dart"
+        },
+        {
             "name": "TEST - iOS Simulator - iPhone 15 Pro Max",
             "request": "launch",
             "type": "dart",

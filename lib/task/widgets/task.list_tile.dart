@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:model_house/task/task.dart';
-import 'package:model_house/task/widgets/task.view.dart';
+import 'package:model_house/task/widgets/task.view.screen.dart';
 
 // TODO review.
 // @withcenter.dev2:
@@ -52,7 +52,7 @@ class TaskListTile extends StatelessWidget {
     showGeneralDialog(
       context: context,
       pageBuilder: (context, a1, a2) {
-        return TaskView(
+        return TaskViewScreen(
           task: task,
         );
       },

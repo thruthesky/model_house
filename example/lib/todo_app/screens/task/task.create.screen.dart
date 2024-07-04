@@ -1,6 +1,9 @@
+import 'package:example/todo_app/screens/task/widgets/assign.user.list.screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:model_house/model_house.dart';
+import 'package:model_house/task/widgets/task.view.screen.dart';
 
 class TaskCreateScreen extends StatefulWidget {
   static const String routeName = '/TaskCreate';
@@ -65,51 +68,73 @@ class _TaskCreateScreenState extends State<TaskCreateScreen> {
             spaceMd,
             const Text("Assign to:"),
             Expanded(
-              child: ListView.builder(
-                itemBuilder: (context, index) {
-                  return Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      Row(
-                        children: [
-                          Expanded(
-                            child: Text(
-                              "${uids[index]}${uids[index] == myUid ? " (You)" : ""}",
+              child: uids.isNotEmpty
+                  ? ListView.builder(
+                      itemBuilder: (context, index) {
+                        return Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    "${uids[index]}${uids[index] == myUid ? " (You)" : ""}",
+                                  ),
+                                ),
+                                IconButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      uids.removeAt(index);
+                                    });
+                                  },
+                                  icon: const Icon(Icons.close),
+                                ),
+                              ],
                             ),
-                          ),
-                          IconButton(
-                            onPressed: () {
-                              setState(() {
-                                uids.removeAt(index);
-                              });
-                            },
-                            icon: const Icon(Icons.close),
-                          ),
-                        ],
-                      ),
-                      if (index == uids.length - 1) ...[
+                            if (index == uids.length - 1) ...[
+                              ElevatedButton(
+                                onPressed: () {
+                                  showAssignUserListScreen(context);
+                                },
+                                child: const Text("+ Add Assigned User"),
+                              )
+                            ]
+                          ],
+                        );
+                      },
+                      itemCount: uids.length,
+                    )
+                  : Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
                         ElevatedButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            showAssignUserListScreen(context);
+                          },
                           child: const Text("+ Add Assigned User"),
-                        )
-                      ]
-                    ],
-                  );
-                },
-                itemCount: uids.length,
-              ),
+                        ),
+                      ],
+                    ),
             ),
             SafeArea(
               child: ElevatedButton(
-                onPressed: () {
-                  Task.create(
+                onPressed: () async {
+                  final task = await Task.create(
                     title: title.text,
                     description: description.text,
+                    assignedUids: uids,
                   );
-
-                  // TODO pop
-                  // TODO push view screen
+                  if (!context.mounted) return;
+                  context.pop();
+                  showGeneralDialog(
+                    context: context,
+                    pageBuilder: (context, a1, a2) {
+                      return TaskViewScreen(
+                        task: task,
+                      );
+                    },
+                  );
                 },
                 child: const Text("Create"),
               ),
@@ -118,5 +143,16 @@ class _TaskCreateScreenState extends State<TaskCreateScreen> {
         ),
       ),
     );
+  }
+
+  showAssignUserListScreen(BuildContext context) async {
+    final re = await showGeneralDialog<String?>(
+      context: context,
+      pageBuilder: (context, a1, a2) {
+        return const AssignUserListScreen();
+      },
+    );
+    if (re == null || uids.contains(re)) return;
+    setState(() => uids.add(re));
   }
 }
