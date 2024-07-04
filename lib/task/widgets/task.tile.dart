@@ -38,7 +38,7 @@ class TaskTile extends StatelessWidget {
           ),
           child: ListTile(
             title: Text(task.title ?? ""),
-            subtitle: Text(task.status?.name ?? ""),
+            // subtitle: Text(task.status?.name ?? ""),
             onTap: () => _onTap(context),
           ),
         );
@@ -53,35 +53,35 @@ class TaskTile extends StatelessWidget {
   }
 
   setStatus(BuildContext context) async {
-    final status = await showDialog<TaskStatus?>(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: const Text("Set Status"),
-          content: Column(mainAxisSize: MainAxisSize.min, children: [
-            ListTile(
-              title: const Text("TODO"),
-              onTap: () => Navigator.pop(context, TaskStatus.todo),
-            ),
-            ListTile(
-              title: const Text("ONGOING"),
-              onTap: () => Navigator.pop(context, TaskStatus.ongoing),
-            ),
-            if (task.creatorUid == FirebaseAuth.instance.currentUser?.uid)
-              ListTile(
-                title: const Text("COMPLETED"),
-                onTap: () => Navigator.pop(context, TaskStatus.done),
-              )
-            else
-              ListTile(
-                title: const Text("REVIEW"),
-                onTap: () => Navigator.pop(context, TaskStatus.review),
-              ),
-          ]),
-        );
-      },
-    );
-    if (status == null) return;
-    await task.updateStatus(status);
+    // final status = await showDialog<TaskStatus?>(
+    //   context: context,
+    //   builder: (context) {
+    //     return AlertDialog(
+    //       title: const Text("Set Status"),
+    //       content: Column(mainAxisSize: MainAxisSize.min, children: [
+    //         ListTile(
+    //           title: const Text("TODO"),
+    //           onTap: () => Navigator.pop(context, TaskStatus.todo),
+    //         ),
+    //         ListTile(
+    //           title: const Text("ONGOING"),
+    //           onTap: () => Navigator.pop(context, TaskStatus.ongoing),
+    //         ),
+    //         if (task.creatorUid == FirebaseAuth.instance.currentUser?.uid)
+    //           ListTile(
+    //             title: const Text("COMPLETED"),
+    //             onTap: () => Navigator.pop(context, TaskStatus.done),
+    //           )
+    //         else
+    //           ListTile(
+    //             title: const Text("REVIEW"),
+    //             onTap: () => Navigator.pop(context, TaskStatus.review),
+    //           ),
+    //       ]),
+    //     );
+    //   },
+    // );
+    // if (status == null) return;
+    // await task.updateStatus(status);
   }
 }
