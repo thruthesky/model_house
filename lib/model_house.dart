@@ -28,4 +28,3 @@ export './widgets/input/label_field.dart';
 export 'task/task.dart';
 export 'task/task.service.dart';
 export 'task/widgets/task.list_view.dart';
-export 'task/widgets/task.grid_view.dart';

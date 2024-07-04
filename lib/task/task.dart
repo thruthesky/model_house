@@ -1,10 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:model_house/task/assigned_task.dart';
 
 // Task Status
 // Status about the task if it is currently ongoing (within the schedule) or ended
 
 /// # Task entity class
+///
+/// TODO revise everything
 ///
 /// This class provides all the functionalities of the entity itself. If the
 /// app needs a functionality that is not for the entity itself, it should be
@@ -54,36 +57,49 @@ import 'package:firebase_auth/firebase_auth.dart';
 ///   - They will have the status of `Todo` but the assigner must
 ///     write feedback.
 class Task {
+  static const collectionName = 'tasks';
+
+  /// Collection Reference for the Firestore Collection
   static CollectionReference col =
-      FirebaseFirestore.instance.collection('tasks');
+      FirebaseFirestore.instance.collection(collectionName);
 
   /// Document Reference for the Firestore Document
   /// That is `todos/{id}/{...}`
   DocumentReference get doc => col.doc(id);
 
+  CollectionReference get assignedSubCol =>
+      doc.collection(AssignedTask.subcollectionName);
+
   String id;
   String? title;
+  String? description;
   String? creatorUid;
   Timestamp? createdAt;
-
   Timestamp? startAt;
   Timestamp? endAt;
+
+  // TODO
+  // String get status {}
 
   Task({
     required this.id,
     this.title,
-    // this.completed = false,
+    this.description,
     this.creatorUid,
     this.createdAt,
+    this.startAt,
+    this.endAt,
   });
 
   factory Task.fromJson(Map<String, dynamic> json, {required String id}) {
-    // final assigned = Map<String, TaskStatus>.from(json['assigned']);
     return Task(
       id: id,
       title: json['title'],
-      // completed: json['completed'],
+      description: json['description'],
       createdAt: json['createdAt'],
+      creatorUid: json['creatorUid'],
+      startAt: json['startAt'],
+      endAt: json['endAt'],
     );
   }
 
@@ -93,8 +109,13 @@ class Task {
   }
 
   Map<String, dynamic> toJson() => {
+        'id': id,
         'title': title,
+        'description': description,
         'creatorUid': creatorUid,
+        'createdAt': createdAt,
+        'startAt': startAt,
+        'endAt': endAt,
       };
 
   @override
@@ -107,17 +128,24 @@ class Task {
   /// Returns `Task`.
   static Future<Task> create({
     required String title,
-    String? creatorUid,
+    String? description,
   }) async {
+    final creatorUid = FirebaseAuth.instance.currentUser?.uid;
     final createData = {
       'title': title,
+      'description': description,
       'creatorUid': creatorUid,
       'createdAt': FieldValue.serverTimestamp(),
     };
     final ref = await col.add(createData);
+    AssignedTask.create(
+      taskId: ref.id,
+      uid: creatorUid!,
+    );
     return Task(
       id: ref.id,
       title: title,
+      description: description,
       creatorUid: creatorUid,
       createdAt: Timestamp.now(),
     );
@@ -146,5 +174,12 @@ class Task {
   delete() {}
 
   /// This will get and return the assigned tasks
-  getAssigned() {}
+  // Future<List<AssignedTask>>
+  getAssignee() {}
+
+  /// Create a new Assigned Task for each uid
+  // Future<List<AssignedTask>>
+  assign({required List<String> uids}) {
+    // TODO
+  }
 }

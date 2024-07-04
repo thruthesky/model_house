@@ -1,8 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_ui_firestore/firebase_ui_firestore.dart';
 import 'package:model_house/task/task.dart';
-import 'package:model_house/task/widgets/task.tile.dart';
+import 'package:model_house/task/widgets/task.list_tile.dart';
 
 class TaskListView extends StatelessWidget {
   const TaskListView({
@@ -13,17 +14,18 @@ class TaskListView extends StatelessWidget {
 
   final Widget Function(BuildContext context, Task task)? itemBuilder;
 
-  // TODO this.query or Task.col
-  Query<Object?> get _query => Task.col;
+  String get myUid => FirebaseAuth.instance.currentUser!.uid;
+
+  Query<Object?> get query => Task.col.where('creatorUid', isEqualTo: myUid);
 
   @override
   Widget build(BuildContext context) {
     // TODO make it a FirestoreQueryBuilder
     return FirestoreListView(
-      query: _query,
+      query: query,
       itemBuilder: (context, doc) {
         final task = Task.fromSnapshot(doc);
-        return itemBuilder?.call(context, task) ?? TaskTile(task: task);
+        return itemBuilder?.call(context, task) ?? TaskListTile(task: task);
       },
     );
   }

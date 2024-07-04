@@ -1,10 +1,11 @@
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:example/todo_app/screens/task/task.create.screen.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:model_house/model_house.dart';
-import 'package:model_house/task/widgets/task.tile.dart';
+import 'package:model_house/task/widgets/task.list_tile.dart';
 
 class TaskListScreen extends StatefulWidget {
-  static const String routeName = '/TodoList';
+  static const String routeName = '/TaskList';
   const TaskListScreen({super.key});
 
   @override
@@ -24,9 +25,10 @@ class _TaskListScreenState extends State<TaskListScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Todo Check List'),
+        title: const Text('Task List Screen'),
       ),
       body: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Expanded(
             child: Padding(
@@ -36,74 +38,29 @@ class _TaskListScreenState extends State<TaskListScreen> {
                   return Row(
                     children: [
                       Expanded(
-                        child: TaskTile(
+                        child: TaskListTile(
                           task: task,
                         ),
                       ),
-                      // Checkbox(
-                      //   value: task.isCompleted,
-                      //   onChanged: (value) {
-                      //     if (value == true) {
-                      //       task.updateStatus(TaskStatus.done);
-                      //     } else if (value == false) {
-                      //       task.updateStatus(TaskStatus.todo);
-                      //     }
-                      //   },
-                      // ),
                     ],
                   );
                 },
               ),
             ),
           ),
-          SafeArea(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Text("Create Todo List"),
-                Row(
-                  children: [
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.fromLTRB(8, 16, 0, 16),
-                        child: TextField(
-                          controller: _title,
-                          decoration: const InputDecoration(
-                            hintText: 'Title',
-                            border: OutlineInputBorder(),
-                          ),
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: IconButton(
-                        onPressed: _addTodo,
-                        icon: const Icon(
-                          Icons.add,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: SafeArea(
+              child: ElevatedButton(
+                onPressed: () {
+                  context.push(TaskCreateScreen.routeName);
+                },
+                child: const Text('Add Task'),
+              ),
             ),
           ),
         ],
       ),
     );
-  }
-
-  _addTodo() async {
-    //   // TODO must come from correct source
-    //   final uid = FirebaseAuth.instance.currentUser!.uid;
-    //   await Task.create(
-    //     title: _title.text,
-    //     creatorUid: uid,
-    //     assigned: {
-    //       uid: TaskStatus.todo,
-    //     },
-    //   );
-    //   _title.clear();
   }
 }

@@ -1,7 +1,9 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:model_house/model_house.dart';
 
 class TaskCreateScreen extends StatefulWidget {
-  static const String routeName = '/TodoCreate';
+  static const String routeName = '/TaskCreate';
   const TaskCreateScreen({super.key});
 
   @override
@@ -9,16 +11,25 @@ class TaskCreateScreen extends StatefulWidget {
 }
 
 class _TaskCreateScreenState extends State<TaskCreateScreen> {
-  final _title = TextEditingController();
-  final _description = TextEditingController();
-  // List<String> urls = [];
+  final title = TextEditingController();
+  final description = TextEditingController();
+
+  String get myUid => FirebaseAuth.instance.currentUser!.uid;
+
+  List<String> uids = [];
 
   List<String> assignedUids = [];
 
   @override
+  void initState() {
+    super.initState();
+    uids.add(myUid);
+  }
+
+  @override
   void dispose() {
-    _title.dispose();
-    _description.dispose();
+    title.dispose();
+    description.dispose();
     super.dispose();
   }
 
@@ -33,13 +44,14 @@ class _TaskCreateScreenState extends State<TaskCreateScreen> {
       body: Padding(
         padding: const EdgeInsets.all(12.0),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             TextField(
               decoration: const InputDecoration(
                 border: OutlineInputBorder(),
                 labelText: 'Title',
               ),
-              controller: _title,
+              controller: title,
             ),
             spaceMd,
             TextField(
@@ -47,12 +59,60 @@ class _TaskCreateScreenState extends State<TaskCreateScreen> {
                 border: OutlineInputBorder(),
                 labelText: 'Description',
               ),
-              controller: _description,
+              controller: description,
             ),
             spaceMd,
-            ElevatedButton(
-              onPressed: () {},
-              child: const Text("Create"),
+            spaceMd,
+            const Text("Assign to:"),
+            Expanded(
+              child: ListView.builder(
+                itemBuilder: (context, index) {
+                  return Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              "${uids[index]}${uids[index] == myUid ? " (You)" : ""}",
+                            ),
+                          ),
+                          IconButton(
+                            onPressed: () {
+                              setState(() {
+                                uids.removeAt(index);
+                              });
+                            },
+                            icon: const Icon(Icons.close),
+                          ),
+                        ],
+                      ),
+                      if (index == uids.length - 1) ...[
+                        ElevatedButton(
+                          onPressed: () {},
+                          child: const Text("+ Add Assigned User"),
+                        )
+                      ]
+                    ],
+                  );
+                },
+                itemCount: uids.length,
+              ),
+            ),
+            SafeArea(
+              child: ElevatedButton(
+                onPressed: () {
+                  Task.create(
+                    title: title.text,
+                    description: description.text,
+                  );
+
+                  // TODO pop
+                  // TODO push view screen
+                },
+                child: const Text("Create"),
+              ),
             ),
           ],
         ),
