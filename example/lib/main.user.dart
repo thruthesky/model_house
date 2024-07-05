@@ -6,6 +6,7 @@ import './firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  TranslationService.instance.init();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(const UserApp());
 }

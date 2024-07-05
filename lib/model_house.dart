@@ -14,12 +14,14 @@ export './translation/translation.extensions.dart';
 export './translation/translation.service.dart';
 export './translation/translation.texts.dart';
 
+export './user/screens/user.profile_update.screen.dart';
 export './user/user.dart';
 export './user/user.defines.dart';
 export './user/user.service.dart';
-export './user/widgets/auth_state_changes.dart';
+export './user/widgets/auth_state.dart';
 export './user/widgets/my_doc.dart';
 export './user/widgets/display_name.dart';
+export './user/widgets/user.list_tile.dart';
 
 export './widgets/auth/email_password_login.dart';
 export './widgets/input/label_field.dart';

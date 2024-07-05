@@ -22,7 +22,7 @@ class _SimpleHomeScreenState extends State<SimpleHomeScreen> {
           iam.signedIn
               ? const Text('Yes, sign in !!')
               : const Text('Not signed In'),
-          AuthStateChanges(
+          AuthState(
             builder: (user) => user == null
                 ? const EmailPasswordLogin()
                 : Column(

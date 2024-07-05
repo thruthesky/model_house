@@ -75,9 +75,9 @@ my.private.set('field', 'value');
 
 ## 사용자 위젯
 
-### 파이어베이스 로그인 AuthStateChanges
+### 파이어베이스 로그인 UserState
 
-`AuthStateChanges` 위젯은 단순히, `Firebase.instance.authStateChanges` 내장하여 사용자의 Firestore 로그인 상태에 따라, UI 위젯을 빌드 할 수 있도록 해 놓은 것이다. 내부적으로 StreamBuilder 를 사용하므로, StreamBuilder 의 특성을 그대로 이용하면 된다.
+`UserState` 위젯은 단순히, `Firebase.instance.authStateChanges` 내장하여 사용자의 Firestore 로그인 상태에 따라, UI 위젯을 빌드 할 수 있도록 해 놓은 것이다. 내부적으로 StreamBuilder 를 사용하므로, StreamBuilder 의 특성을 그대로 이용하면 된다.
 
 
 
@@ -87,8 +87,13 @@ my.private.set('field', 'value');
 
 로그인한 사용자의 정보를 액세스 할 수 있다. 즉, 나의 이름이나 나이, 성별 등의 정보를 읽고 수정 할 수 있다.
 
+주의 할 것은 로그인을 해도 builder 의 파라메타가 null 일 수 있다. 따라서 로그인을 했는지 하지 않았는지로 사용하지 않도록 한다.
+
+다만, 나의 정보를 나타낼 때, 데이터가 로딩되었으면 위젯을 보여주고, 로딩되지 않았으면, 사용자 데이터를 로딩 중이라고는 표시 할 수 있다.
 
 
+
+/// -- 여기서 부터
 
 
 `UserService.instance.user` 는 DB 의 사용자 문서 값을 모델로 가지고 있는 변수이다. 짧게 `my` 로 쓸 수 있도록 해 놓았다. DB 의 값이 변경되면 실시간으로 이 변수의 값도 업데이트(sync)된다. 그래서 DB 에 값을 변경 한 다음, (약간 쉬었다) `my` 변수로 올바로 값이 저장되었는지 확인 할 수 있다. 예를 들면, form field 값 변경 즉시 저장하고, submit 버튼을 누르면 확인을 할 수 있다.

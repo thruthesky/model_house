@@ -9,18 +9,28 @@ import 'package:model_house/model_house.dart';
 /// [private] is the private field that will be used to store the user's data.
 class User {
   String uid;
-  String? name;
+  String displayName;
+  String name;
   String? gender;
-  DateTime updatedAt;
 
-  CollectionReference col = FirebaseFirestore.instance.collection('users');
+  /// 처음 회원 가입을 하고, 최초 데이터를 업데이트(저장)하는 동안에는 createdAt 이 null 이 될 수 있다.
+  DateTime? createdAt;
+  DateTime? updatedAt;
+  DateTime? lastLoginAt;
+
+  /// Collection reference of the user's collection.
+  ///
+  CollectionReference col = UserService.instance.col;
   DocumentReference get doc => col.doc(uid);
 
   User({
     required this.uid,
-    this.name,
+    this.displayName = '',
+    this.name = '',
     this.gender,
-    required this.updatedAt,
+    this.createdAt,
+    this.updatedAt,
+    this.lastLoginAt,
   });
 
   /// Create a user with the given [uid].
@@ -40,7 +50,7 @@ class User {
   factory User.fromUid(String uid) {
     return User(
       uid: uid,
-      updatedAt: DateTime.now(),
+      lastLoginAt: DateTime.now(),
     );
   }
 
@@ -59,27 +69,53 @@ class User {
   factory User.fromJson(Map<String, dynamic> json, String uid) {
     return User(
       uid: uid,
-      name: json['name'],
+      displayName: json['displayName'] ?? '',
+      name: json['name'] ?? '',
       gender: json['gender'],
+      createdAt: json['createdAt'] is Timestamp
+          ? (json['createdAt'] as Timestamp).toDate()
+          : null,
       updatedAt: json['updatedAt'] is Timestamp
           ? (json['updatedAt'] as Timestamp).toDate()
-          : DateTime.now(),
+          : null,
+      lastLoginAt: json['lastLoginAt'] is Timestamp
+          ? (json['lastLoginAt'] as Timestamp).toDate()
+          : null,
     );
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
+    data['displayName'] = displayName;
     data['name'] = name;
     data['gender'] = gender;
+    data['createdAt'] = createdAt;
+    data['updatedAt'] = updatedAt;
+    data['lastLoginAt'] = lastLoginAt;
     return data;
   }
 
-  Future<User?> get(String uid) async {
-    User? user = MemoryCache.instance.read<User?>(uid);
-    if (user != null) {
-      return user;
+  /// Get a user with the given [uid].
+  ///
+  /// This is a static method that will be used to get a user with the given [uid].
+  ///
+  /// [cache] if cache is true, it will use the cache data if it exists. If not,
+  /// it will get the data from the server.
+  ///
+  /// It will return a Future of User?
+  static Future<User?> get(
+    String uid, {
+    bool cache = true,
+  }) async {
+    User? user;
+    if (cache) {
+      user = MemoryCache.instance.read<User?>(uid);
+      if (user != null) {
+        return user;
+      }
     }
-    final DocumentSnapshot snapshot = await col.doc(uid).get();
+    final DocumentSnapshot snapshot =
+        await UserService.instance.col.doc(uid).get();
     if (snapshot.exists) {
       user = User.fromSnapshot(snapshot);
       MemoryCache.instance.create(uid, user);
@@ -103,28 +139,15 @@ class User {
     throw HouseException(code.house.notForUse, 'User.create is not for use.');
   }
 
-  Future update() async {
-    await doc.set({'name': name}, SetOptions(merge: true));
-  }
-
-  /// 로그인 할 때, 'updatedAt' 을 업데이트
-  ///
-  /// 특히, 사용자의 문서를 listen 하기전에 문서가 미리 존재해야하는데, listen 하기 전에
-  /// 이 함수를 이용해서, 문서가 존재하는 것을 보장한다.
-  ///
-  /// Updates "updatedAt" field on user's auth state changes (logs in).
-  ///
-  /// This is because the listener will not listen if the document does not
-  /// eixsts, and this makes sure the document to be exist.
-  ///
-  Future updateOnAuthStateChange() async {
+  Future update({
+    String? displayName,
+  }) async {
     await doc.set(
       {
         'updatedAt': FieldValue.serverTimestamp(),
+        if (displayName != null) 'displayName': displayName,
       },
-      SetOptions(
-        merge: true,
-      ),
+      SetOptions(merge: true),
     );
   }
 }

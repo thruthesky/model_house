@@ -5,7 +5,7 @@ extension TranslationServiceExtensionMap on String {
   ///
   /// Example:
   /// ```dart
-  /// 'version'.tr.replace({'#version': '1.0.0'})
+  /// 'version'.tr(args: {'#version': '1.0.0'})
   /// ```
   String get t => TranslationService.instance.tr(this);
   String tr({Map<String, dynamic>? args, int? form}) =>

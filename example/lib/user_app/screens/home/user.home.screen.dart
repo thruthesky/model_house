@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:model_house/model_house.dart';
 
 class UserHomeScreen extends StatefulWidget {
@@ -18,7 +19,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
       ),
       body: Column(
         children: [
-          AuthStateChanges(
+          AuthState(
             builder: (user) => user == null
                 ? const EmailPasswordLogin()
                 : ElevatedButton(
@@ -29,7 +30,13 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
           MyDoc(
             builder: (user) => user == null
                 ? const SizedBox.shrink()
-                : Text('Welcome ${user.updatedAt}'),
+                : Text('Welcome, ${user.displayName}, ${user.lastLoginAt}'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              context.push(UserProfileUpdateScreen.routeName);
+            },
+            child: const Text('Profile Update'),
           ),
         ],
       ),
