@@ -28,11 +28,11 @@ class TaskViewScreen extends StatelessWidget {
             Text("Description: ${task.description}"),
             space,
             const Text("Assigned to:"),
-            Expanded(
-              child: AssignedTaskListView(
-                taskId: task.id,
-              ),
-            ),
+            // Expanded(
+            //   child: AssignedTaskListView(
+            //     taskId: task.id,
+            //   ),
+            // ),
             space,
             SafeArea(
               child: ElevatedButton(

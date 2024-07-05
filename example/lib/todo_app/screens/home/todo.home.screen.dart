@@ -3,7 +3,7 @@ import 'package:example/todo_app/screens/task/task.list.screen.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:model_house/user/user.defines.dart';
-import 'package:model_house/user/widgets/auth_state_changes.dart';
+import 'package:model_house/user/widgets/auth_state.dart';
 import 'package:model_house/user/widgets/display_name.dart';
 import 'package:model_house/widgets/auth/email_password_login.dart';
 
@@ -28,7 +28,7 @@ class _TodoHomeScreenState extends State<TodoHomeScreen> {
           iam.signedIn
               ? const Text('Yes, sign in !!')
               : const Text('Not signed In'),
-          AuthStateChanges(
+          AuthState(
             builder: (user) => user == null
                 ? const EmailPasswordLogin()
                 : Column(
