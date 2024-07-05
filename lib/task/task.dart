@@ -68,7 +68,7 @@ class Task {
   DocumentReference get doc => col.doc(id);
 
   CollectionReference get assignedSubCol =>
-      doc.collection(AssignedTask.subcollectionName);
+      doc.collection(Assignee.subcollectionName);
 
   String id;
   String? title;
@@ -179,16 +179,16 @@ class Task {
   delete() {}
 
   /// This will get and return the assigned tasks
-  // Future<List<AssignedTask>>
+  // Future<List<Assignee>>
   getAssignee() {}
 
   /// Create a new Assigned Task for each uid
-  Future<List<AssignedTask>> assign({required List<String> uids}) async {
+  Future<List<Assignee>> assign({required List<String> uids}) async {
     final assignedFutures = uids
-        .map((uid) async => await AssignedTask.create(taskId: id, uid: uid))
+        .map((uid) async => await Assignee.create(taskId: id, uid: uid))
         .toList();
-    final List<AssignedTask> assignedTasks =
-        await Future.wait<AssignedTask>(assignedFutures);
+    final List<Assignee> assignedTasks =
+        await Future.wait<Assignee>(assignedFutures);
     return assignedTasks;
   }
 }

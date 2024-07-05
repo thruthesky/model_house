@@ -14,7 +14,10 @@ class AssigneeStatus {
   static const String paused = 'paused';
   static const String ongoing = 'ongoing';
   static const String review = 'review';
-  static const String ended = 'ended';
+  static const String failed = 'failed';
+  static const String completed = 'completed';
+
+  AssigneeStatus._();
 }
 
 /// # Assigned Task
@@ -22,8 +25,8 @@ class AssigneeStatus {
 /// Since task can be assigned to multiple users,
 /// it should be handled as subcollection under the
 /// task document under `assigned`
-class AssignedTask {
-  static const subcollectionName = 'assigned';
+class Assignee {
+  static const subcollectionName = 'assignee';
 
   // CollectionReference get subCol =>
   //     Task.col.doc(taskId).collection(subcollectionName);
@@ -64,10 +67,6 @@ class AssignedTask {
   /// by defaut, it should be todo.
   String status;
 
-  /// [approvalStatus] is the status if the creator
-  /// of the task approves the work.
-  String? approvalStatus;
-
   Timestamp? createdAt;
 
   // TODO review
@@ -96,34 +95,32 @@ class AssignedTask {
   /// ```
   Map<String, Map<String, String>> comments;
 
-  AssignedTask({
+  Assignee({
     required this.id,
     required this.taskId,
     required this.assignerUid,
     required this.assigneeUid,
     required this.status,
-    this.approvalStatus,
     required this.comments,
     required this.createdAt,
   });
 
-  AssignedTask.fromJson(Map<String, dynamic> json, {required this.id})
+  Assignee.fromJson(Map<String, dynamic> json, {required this.id})
       : taskId = json['taskId'],
         assignerUid = json['assignerUid'],
         assigneeUid = json['assigneeUid'],
         status = json['status'] ?? 'todo',
-        approvalStatus = json['approvalStatus'],
         comments = Map<String, Map<String, String>>.from(
             (json['comments'] ?? {}) as Map<dynamic, dynamic>),
         createdAt = json['createdAt'];
 
-  static AssignedTask fromSnapshot(QueryDocumentSnapshot<Object?> doc) {
+  static Assignee fromSnapshot(QueryDocumentSnapshot<Object?> doc) {
     final data = Map<String, dynamic>.from((doc.data() ?? {}) as Map);
-    return AssignedTask.fromJson(data, id: doc.id);
+    return Assignee.fromJson(data, id: doc.id);
   }
 
   /// This will assign a task to a user
-  static Future<AssignedTask> create({
+  static Future<Assignee> create({
     required String taskId,
     required String uid,
     String status = AssigneeStatus.todo,
@@ -142,7 +139,7 @@ class AssignedTask {
     };
 
     final ref = await subCol.add(createData);
-    return AssignedTask(
+    return Assignee(
       id: ref.id,
       taskId: taskId,
       assignerUid: myUid,
@@ -153,7 +150,7 @@ class AssignedTask {
     );
   }
 
-  Future<AssignedTask> update({
+  Future<Assignee> update({
     String? status,
   }) async {
     final updateData = {

@@ -2,6 +2,7 @@ import 'package:example/firebase_options.dart';
 import 'package:example/todo_app/todo_app.router.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:model_house/model_house.dart';
 import 'package:model_house/translation/translation.service.dart';
 
 main() async {
@@ -13,6 +14,7 @@ main() async {
     useKeyAsDefaultText: false,
   );
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  UserService.instance.init();
   runApp(const TodoApp());
 }
 

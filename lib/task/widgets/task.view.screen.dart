@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:model_house/model_house.dart';
-import 'package:model_house/task/widgets/assigned_task.list_view.dart';
+import 'package:model_house/task/widgets/assignee.list_view.dart';
 
 class TaskViewScreen extends StatelessWidget {
   const TaskViewScreen({
@@ -28,11 +28,11 @@ class TaskViewScreen extends StatelessWidget {
             Text("Description: ${task.description}"),
             space,
             const Text("Assigned to:"),
-            // Expanded(
-            //   child: AssignedTaskListView(
-            //     taskId: task.id,
-            //   ),
-            // ),
+            Expanded(
+              child: AssigneeListView(
+                taskId: task.id,
+              ),
+            ),
             space,
             SafeArea(
               child: ElevatedButton(

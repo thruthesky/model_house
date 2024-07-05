@@ -1,3 +1,4 @@
+import 'package:example/todo_app/screens/task/assigned.task.list.screen.dart';
 import 'package:example/todo_app/screens/task/task.create.screen.dart';
 import 'package:example/todo_app/screens/task/task.list.screen.dart';
 import 'package:flutter/material.dart';
@@ -52,9 +53,9 @@ class _TodoHomeScreenState extends State<TodoHomeScreen> {
                       ),
                       ElevatedButton(
                         onPressed: () {
-                          context.push(TaskListScreen.routeName);
+                          context.push(AssignedTaskListScreen.routeName);
                         },
-                        child: const Text('Assigned List'),
+                        child: const Text('Assigned Task List'),
                       ),
                       ElevatedButton(
                         onPressed: () => i.signOut(),

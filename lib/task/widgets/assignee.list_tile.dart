@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:model_house/task/assigned_task.dart';
-import 'package:model_house/task/widgets/assigned_task.view.screen.dart';
+import 'package:model_house/task/widgets/assignee.view.screen.dart';
 
-class AssignedTaskListTile extends StatelessWidget {
-  const AssignedTaskListTile({
+class AssigneeListTile extends StatelessWidget {
+  const AssigneeListTile({
     super.key,
     required this.assignedTask,
   });
 
-  final AssignedTask assignedTask;
+  final Assignee assignedTask;
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +26,7 @@ class AssignedTaskListTile extends StatelessWidget {
           showGeneralDialog(
             context: context,
             pageBuilder: (context, a1, a2) =>
-                AssignedTaskViewScreen(assignedTask: assignedTask),
+                AssigneeViewScreen(assignedTask: assignedTask),
           );
         },
       ),

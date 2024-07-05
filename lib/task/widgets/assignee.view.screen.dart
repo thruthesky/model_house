@@ -2,19 +2,19 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:model_house/task/assigned_task.dart';
 
-class AssignedTaskViewScreen extends StatefulWidget {
-  const AssignedTaskViewScreen({
+class AssigneeViewScreen extends StatefulWidget {
+  const AssigneeViewScreen({
     super.key,
     required this.assignedTask,
   });
 
-  final AssignedTask assignedTask;
+  final Assignee assignedTask;
 
   @override
-  State<AssignedTaskViewScreen> createState() => _AssignedTaskViewScreenState();
+  State<AssigneeViewScreen> createState() => _AssigneeViewScreenState();
 }
 
-class _AssignedTaskViewScreenState extends State<AssignedTaskViewScreen> {
+class _AssigneeViewScreenState extends State<AssigneeViewScreen> {
   String get myUid => FirebaseAuth.instance.currentUser!.uid;
 
   Widget get spaceMd => const SizedBox(height: 12);

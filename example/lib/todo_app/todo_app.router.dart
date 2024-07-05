@@ -1,4 +1,5 @@
 import 'package:example/todo_app/screens/home/todo.home.screen.dart';
+import 'package:example/todo_app/screens/task/assigned.task.list.screen.dart';
 import 'package:example/todo_app/screens/task/task.create.screen.dart';
 import 'package:example/todo_app/screens/task/task.list.screen.dart';
 import 'package:example/todo_app/screens/user/profile.screen.dart';
@@ -22,8 +23,8 @@ final todoRouter = GoRouter(
       builder: (context, state) => const TaskCreateScreen(),
     ),
     GoRoute(
-      path: TaskListScreen.routeName,
-      builder: (context, state) => const TaskListScreen(),
+      path: AssignedTaskListScreen.routeName,
+      builder: (context, state) => const AssignedTaskListScreen(),
     ),
     GoRoute(
       path: SignInScreen.routeName,
